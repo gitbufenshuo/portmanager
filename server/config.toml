@@ -1,0 +1,12 @@
+[redis]
+server_port = "127.0.0.1:6379"
+password = "password"
+[api]
+http_prefix = "/portmanager"
+key_ttl = 20
+[app]
+    [my_web_server]
+    port = 30000
+    [my_job_server]
+    port = 30100
+    # [...]
