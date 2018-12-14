@@ -1,9 +1,11 @@
 [redis]
 server_port = "127.0.0.1:6379"
 password = "password"
+database = 1
+key_prefix = "port"
+key_ttl = 9999
 [api]
 http_prefix = "/portmanager"
-key_ttl = 20
 [app]
     [my_web_server]
     port = 30000

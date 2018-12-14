@@ -13,20 +13,26 @@ import (
 )
 
 func main() {
-	{
+	{ // global_config
 		if _, err := toml.DecodeFile(os.Getenv("filename"), &config.Conf); err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		} else {
+			fmt.Println(&config.Conf)
+		}
+	}
+	{ // redis_config
+		conf := &driver.RedisConf
+		conf.HostPort = config.Conf.RedisConfig.ServerPort
+		conf.Password = config.Conf.RedisConfig.Password
+		conf.Database = config.Conf.RedisConfig.Database
+		if err := driver.Init(conf); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 	}
-	{
-		var conf driver.RedisConfig
-		conf.HostPort = config.Conf.RedisConfig.ServerPort
-		conf.Password = config.Conf.RedisConfig.Password
-		if err := driver.Init(&conf); err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
+	{ // handlers_config
+		handler.Init()
 	}
 	e := echo.New()
 	e.Use(mid.SuperCtx(mid.DefaultLoggerConfig))

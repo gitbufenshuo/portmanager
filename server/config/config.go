@@ -1,25 +1,22 @@
 package config
 
-// [redis]
-// server_port = "127.0.0.1:6379"
-// user = "user"
-// password = "password"
-// [api]
-// http_prefix = "/portmanager"
-// key_ttl = 20
-// [app_list]
-//     [my_web_server]
-//     port = 30000
-//     [my_job_server]
-//     port = 30100
-//     # [...]
+import "encoding/json"
+
 type RedisConfig struct {
 	ServerPort string `toml:"server_port"`
 	Password   string `toml:"password"`
+	Database   int    `toml:"database"`
+	KeyPrefix  string `toml:"key_prefix"`
+	KeyTTL     int    `toml:"key_ttl"`
 }
+
+func (conf *RedisConfig) String() string {
+	b, _ := json.Marshal(conf)
+	return string(b)
+}
+
 type API struct {
 	HTTPPrefix string `toml:"http_prefix"`
-	KeyTTL     string `toml:"key_ttl"`
 }
 type PortConfig struct {
 	Port int `toml:"port"`

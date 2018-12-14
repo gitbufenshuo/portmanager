@@ -7,14 +7,15 @@ import (
 type RedisConfig struct {
 	HostPort string
 	Password string
+	Database int
 	_session *redis.Client
 }
 
 func (rc *RedisConfig) redis_init() error {
 	client := redis.NewClient(&redis.Options{
 		Addr:     rc.HostPort,
-		Password: rc.Password, // no password set
-		DB:       1,           // 我们只使用 1
+		Password: rc.Password,
+		DB:       rc.Database,
 	})
 
 	if _, err := client.Ping().Result(); err != nil {
@@ -27,6 +28,8 @@ func (rc *RedisConfig) redis_init() error {
 func (rc *RedisConfig) GetRedisSession() *redis.Client {
 	return rc._session
 }
+
+var RedisConf RedisConfig
 
 func Init(rc *RedisConfig) error {
 	return rc.redis_init()
