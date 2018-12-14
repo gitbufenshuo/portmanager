@@ -28,6 +28,9 @@ func (rc *RedisConfig) redis_init() error {
 func (rc *RedisConfig) GetRedisSession() *redis.Client {
 	return rc._session
 }
+func (rc *RedisConfig) Close() {
+	rc._session.Close()
+}
 
 var RedisConf RedisConfig
 

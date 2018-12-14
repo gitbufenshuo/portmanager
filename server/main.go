@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/BurntSushi/toml"
 	"github.com/gitbufenshuo/portmanager/server/config"
@@ -18,7 +21,7 @@ func main() {
 			fmt.Println(err)
 			os.Exit(1)
 		} else {
-			fmt.Println(&config.Conf)
+			fmt.Printf("%v\n", config.Conf.String())
 		}
 	}
 	{ // redis_config
@@ -39,6 +42,19 @@ func main() {
 	e.Use(mid.RecoverMid)
 	e.GET("/"+config.Conf.API.HTTPPrefix+"/available/:hostname/:appname", handler.Available)
 	e.GET("/"+config.Conf.API.HTTPPrefix+"/heartbeat/:hostname/:appname", handler.Heartbeat)
-
-	e.Start(os.Getenv("bind"))
+	go serve(e)
+	{
+		// 接收操作系统 signal
+		c := make(chan os.Signal)
+		signal.Notify(c, syscall.SIGTERM, syscall.SIGINT)
+		<-c
+		fmt.Println(">>>>>>>> stop server <<<<<<<<", time.Now().Unix())
+	}
+	e.Close()
+	driver.RedisConf.Close()
+	fmt.Println(">>>>>>>> stop server success <<<<<<<<", time.Now().Unix())
+}
+func serve(e *echo.Echo) {
+	err := e.Start(os.Getenv("bind"))
+	fmt.Println("serve:", err)
 }

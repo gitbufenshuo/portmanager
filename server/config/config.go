@@ -10,21 +10,21 @@ type RedisConfig struct {
 	KeyTTL     int    `toml:"key_ttl"`
 }
 
-func (conf *RedisConfig) String() string {
-	b, _ := json.Marshal(conf)
-	return string(b)
-}
-
 type API struct {
 	HTTPPrefix string `toml:"http_prefix"`
 }
-type PortConfig struct {
-	Port int `toml:"port"`
+type APP struct {
+	PortBegin int `toml:"port_begin"`
 }
 type Config struct {
-	RedisConfig RedisConfig           `toml:"redis"`
-	API         API                   `toml:"api"`
-	APPList     map[string]PortConfig `toml:"app_list"`
+	RedisConfig RedisConfig `toml:"redis"`
+	API         API         `toml:"api"`
+	APP         APP         `toml:"app"`
+}
+
+func (conf *Config) String() string {
+	b, _ := json.Marshal(conf)
+	return string(b)
 }
 
 var Conf Config
